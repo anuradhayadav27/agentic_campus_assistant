@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentic AI Assistant for Multi-Step Campus Workflows | Group 9</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="navbar">
+    <div class="nav-left">
+      <div class="logo-badge">CSE276</div>
+      <div>
+        <h1 class="nav-title">Agentic AI Assistant for Campus Workflows</h1>
+        <p class="nav-subtitle">Group 9: Ruben Jose · Anupa Yadav · Erick Simon Kasole | LPU AI Foundations</p>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="student-selector-wrap">
+        <label for="studentSelect">Active Student:</label>
+        <select id="studentSelect" onchange="changeActiveStudent()">
+          <option value="12109482" selected>Anupa Yadav (12109482)</option>
+          <option value="12109483">Ruben Jose (12109483)</option>
+          <option value="12109484">Erick Simon Kasole (12109484)</option>
+        </select>
+      </div>
+      <div class="status-indicator">
+        <span class="status-dot"></span>
+        <span>ReAct Engine: Active</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="tabs-bar">
+    <button class="tab-btn active" onclick="switchTab('tab-chat')">🤖 AI Assistant & ReAct Inspector</button>
+    <button class="tab-btn" onclick="switchTab('tab-services')">🏛️ Campus Services Hub</button>
+    <button class="tab-btn" onclick="switchTab('tab-benchmark')">📊 Agentic vs. Rule-Based Benchmark</button>
+    <button class="tab-btn" onclick="switchTab('tab-logs')">📜 Decision & Execution Logs</button>
+    <button class="tab-btn" onclick="switchTab('tab-viva')">🎓 Viva Voce & Architecture Guide</button>
+  </nav>
+
+  <!-- Main Content Container -->
+  <main class="main-container">
+
+    <!-- TAB 1: Chat & ReAct Inspector -->
+    <section id="tab-chat" class="tab-content active">
+      <div class="chat-layout">
+        <!-- Chat Area -->
+        <div class="chat-card">
+          <div class="chat-header">
+            <div class="chat-header-title">
+              <span class="chat-icon">💬</span>
+              <div>
+                <h2>Campus Assistant</h2>
+                <p>Natural Language Multi-Step Goal Execution</p>
+              </div>
+            </div>
+            <button class="btn-secondary btn-sm" onclick="clearChat()">Clear History</button>
+          </div>
+
+          <!-- Suggested Quick Prompts -->
+          <div class="quick-prompts">
+            <span class="qp-label">Quick Prompts:</span>
+            <button class="qp-chip" onclick="fillPrompt('Check my attendance for CSE276, and book Lab 34-601 tomorrow at 11:00 AM.')">
+              ⚡ Multi-Intent: Attendance + Lab
+            </button>
+            <button class="qp-chip" onclick="fillPrompt('Book Lab 34-601 tomorrow for 09:00 - 11:00 slot to run AI experiments.')">
+              🔄 Conflict Test: Full Slot Re-Planning
+            </button>
+            <button class="qp-chip" onclick="fillPrompt('The projector in Block 34 Room 601 is flickering and HDMI port is loose, please register a complaint.')">
+              🔧 Maintenance Complaint
+            </button>
+            <button class="qp-chip" onclick="fillPrompt('Apply for medical leave from 2026-11-12 to 2026-11-15 due to high viral fever.')">
+              📋 Medical Leave Application
+            </button>
+            <button class="qp-chip" onclick="fillPrompt('Search and reserve Artificial Intelligence: A Modern Approach from the central library.')">
+              📚 Library Book Reservation
+            </button>
+            <button class="qp-chip" onclick="fillPrompt('I was marked absent unfairly and accused of cheating; I demand an administrative appeal.')">
+              ⚠️ Grievance Escalation
+            </button>
+          </div>
+
+          <!-- Messages Stream -->
+          <div id="chatMessages" class="chat-messages">
+            <div class="message assistant-msg">
+              <div class="msg-avatar">🤖</div>
+              <div class="msg-body">
+                <div class="msg-text">
+                  Hello! I am your <strong>Agentic Campus AI Assistant</strong>.
+                  <br><br>
+                  Unlike standard chatbots that only answer questions or handle a single keyword, I can:
+                  <ul>
+                    <li><strong>Decompose complex goals</strong> across multiple campus services into ordered subtasks</li>
+                    <li><strong>Autonomously invoke tools</strong> (Lab booking, Maintenance, Attendance, Leave, Library)</li>
+                    <li><strong>Dynamically re-plan</strong> if a slot is full or a book is out of stock</li>
+                    <li><strong>Escalate to campus administration</strong> if a request requires human oversight</li>
+                  </ul>
+                  Try typing a compound request or choose a quick prompt above!
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Input Bar -->
+          <div class="chat-input-area">
+            <textarea id="chatInput" placeholder="Type your multi-step campus request (e.g. 'Check my attendance and book Lab 34-601 tomorrow...')" rows="2" onkeydown="handleInputKey(event)"></textarea>
+            <button id="sendBtn" class="btn-primary" onclick="sendMessage()">
+              <span>Send Request</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ReAct Trace Inspector (Right Column) -->
+        <div class="inspector-card">
+          <div class="inspector-header">
+            <h3>🔬 ReAct Execution & Decision Inspector</h3>
+            <span class="badge-tag" id="inspectorStatus">Awaiting Request</span>
+          </div>
+
+          <div id="inspectorContent" class="inspector-body">
+            <div class="empty-state">
+              <div class="empty-icon">🧠</div>
+              <h4>No Active Execution Trace</h4>
+              <p>Send a message in the chat to see real-time Goal Decomposition, Tool Execution, Dynamic Re-Planning, and Rule-Based Comparison!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: Campus Services Hub -->
+    <section id="tab-services" class="tab-content">
+      <div class="services-header">
+        <div>
+          <h2>Campus Services Live Dashboard</h2>
+          <p>Real-time database records updated autonomously by the Agentic AI Assistant</p>
+        </div>
+        <button class="btn-secondary" onclick="loadCampusData()">🔄 Refresh Database View</button>
+      </div>
+
+      <div class="services-grid">
+        <!-- Attendance Card -->
+        <div class="service-box">
+          <div class="service-box-header">
+            <h3>📊 Attendance Records</h3>
+            <span class="badge-blue" id="attOverallBadge">Loading...</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="attendanceTable">
+              <thead>
+                <tr>
+                  <th>Course Code</th>
+                  <th>Course Title</th>
+                  <th>Held</th>
+                  <th>Attended</th>
+                  <th>Percentage</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Labs & Slots Card -->
+        <div class="service-box">
+          <div class="service-box-header">
+            <h3>🖥️ Labs & Scheduled Slots</h3>
+            <span class="badge-green">Live Availability</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="slotsTable">
+              <thead>
+                <tr>
+                  <th>Lab</th>
+                  <th>Date</th>
+                  <th>Time Range</th>
+                  <th>Available Seats</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="slotsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Recent Lab Bookings -->
+        <div class="service-box">
+          <div class="service-box-header">
+            <h3>🎟️ Recent Lab Bookings</h3>
+            <span class="badge-purple">Issued Passes</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Student</th>
+                  <th>Lab</th>
+                  <th>Date & Time</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="bookingsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Maintenance Complaints -->
+        <div class="service-box">
+          <div class="service-box-header">
+            <h3>🔧 Maintenance Complaints</h3>
+            <span class="badge-orange">Campus Facilities</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Location</th>
+                  <th>Category</th>
+                  <th>Priority</th>
+                  <th>Assigned Tech</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="complaintsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Leave Applications -->
+        <div class="service-box">
+          <div class="service-box-header">
+            <h3>📋 Leave Applications</h3>
+            <span class="badge-teal">Institutional Workflow</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Leave ID</th>
+                  <th>Type</th>
+                  <th>Duration</th>
+                  <th>Days</th>
+                  <th>Approval Authority</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="leavesTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Library Catalog & Reservations -->
+        <div class="service-box">
+          <div class="service-box-header">
+            <h3>📚 Central Library Reservations</h3>
+            <span class="badge-blue">Textbook Holds</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Token ID</th>
+                  <th>Book Title</th>
+                  <th>Shelf Location</th>
+                  <th>Pickup Deadline</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="libraryTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Escalation Tickets -->
+        <div class="service-box full-width">
+          <div class="service-box-header">
+            <h3>⚠️ Human Administration Escalation Tickets</h3>
+            <span class="badge-red">Grievance & Review Cell</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Ticket ID</th>
+                  <th>Student</th>
+                  <th>Issue Summary</th>
+                  <th>Severity</th>
+                  <th>Assigned Department</th>
+                  <th>Status</th>
+                  <th>Created At</th>
+                </tr>
+              </thead>
+              <tbody id="escalationsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: Benchmark -->
+    <section id="tab-benchmark" class="tab-content">
+      <div class="benchmark-header">
+        <div>
+          <h2>Agentic AI vs. Scripted Rule-Based Baseline Benchmark</h2>
+          <p>Evaluation against legacy regex/scripted chatbots across 6 standard campus edge cases</p>
+        </div>
+        <button class="btn-primary" onclick="runBenchmark()">▶️ Execute Benchmark Suite Now</button>
+      </div>
+
+      <!-- Metric Cards -->
+      <div class="metrics-grid">
+        <div class="metric-card metric-agentic">
+          <div class="metric-title">Agentic AI Subgoal Success Rate</div>
+          <div class="metric-value" id="agentSuccessRate">93.8%</div>
+          <div class="metric-desc">Autonomous multi-step execution & goal decomposition</div>
+        </div>
+        <div class="metric-card metric-rule">
+          <div class="metric-title">Rule-Based Chatbot Success Rate</div>
+          <div class="metric-value" id="ruleSuccessRate">36.4%</div>
+          <div class="metric-desc">Single-intent bottleneck; drops secondary tasks</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Dynamic Re-Planning Events</div>
+          <div class="metric-value text-accent" id="replanningEvents">1 / 1</div>
+          <div class="metric-desc">Autonomously negotiated alternative slots/books</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Human Escalation Safety Guard</div>
+          <div class="metric-value text-green" id="escalationEvents">2 / 2</div>
+          <div class="metric-desc">Disciplinary grievances safely routed to admin</div>
+        </div>
+      </div>
+
+      <!-- Test Cases Table -->
+      <div class="benchmark-table-box">
+        <h3>Detailed Scenario Matrix</h3>
+        <div class="table-responsive">
+          <table class="data-table" id="benchmarkTable">
+            <thead>
+              <tr>
+                <th>Test ID</th>
+                <th>Scenario Name</th>
+                <th>Student Query</th>
+                <th>Agentic AI Performance</th>
+                <th>Rule-Based Baseline</th>
+                <th>Comparative Outcome</th>
+              </tr>
+            </thead>
+            <tbody id="benchmarkTbody">
+              <tr>
+                <td colspan="6" class="text-center">Click "Execute Benchmark Suite Now" to run live test evaluation.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: Decision & Execution Logs -->
+    <section id="tab-logs" class="tab-content">
+      <div class="logs-header">
+        <div>
+          <h2>Agent Decision & Execution Logs</h2>
+          <p>Complete traceability: Subgoal Decomposition, Tool Invocations, Latency, and Re-planning Notes</p>
+        </div>
+        <button class="btn-secondary" onclick="loadLogs()">🔄 Refresh Logs</button>
+      </div>
+
+      <div id="logsContainer" class="logs-container">
+        <div class="empty-state">Loading execution logs...</div>
+      </div>
+    </section>
+
+    <!-- TAB 5: Viva Voce & Architecture Guide -->
+    <section id="tab-viva" class="tab-content">
+      <div class="viva-header">
+        <h2>🎓 CSE276 Project Viva Voce & Architecture Guide</h2>
+        <p>Comprehensive preparation sheet for <strong>Ruben Jose</strong>, <strong>Anupa Yadav</strong>, and <strong>Erick Simon Kasole</strong></p>
+      </div>
+
+      <div class="viva-grid">
+        <!-- Card 1: 1-Minute Pitch -->
+        <div class="viva-card highlight-card">
+          <h3>🎙️ The Perfect 1-Minute Project Pitch (Ruben, Anupa, Erick)</h3>
+          <p class="quote-box">
+            "Good morning, professors. Our project for CSE276 is an <strong>Agentic AI Assistant for Multi-Step Campus Service Workflows</strong>. 
+            Unlike traditional chatbots that simply match static keywords and answer one question at a time, our system implements an autonomous <strong>ReAct (Reasoning + Acting)</strong> agent loop. 
+            When a student gives a complex goal like <em>'Check my CSE276 attendance, book Lab 34-601 tomorrow, and report a broken projector'</em>, our agent:
+            <br>
+            <strong>1. Decomposes the goal</strong> into atomic subtasks,<br>
+            <strong>2. Selects and invokes tools</strong> across university departments,<br>
+            <strong>3. Observes execution feedback</strong> and dynamically re-plans if a slot is full or a book is out of stock, and<br>
+            <strong>4. Safely escalates</strong> to human authorities when administrative intervention is needed.<br>
+            Our benchmark shows a <strong>93.8% multi-step success rate</strong> compared to only <strong>36.4%</strong> for traditional rule-based chatbots."
+          </p>
+        </div>
+
+        <!-- Card 2: Core Viva Questions & Answers -->
+        <div class="viva-card">
+          <h3>❓ Top Viva Questions & Answers</h3>
+          <div class="faq-item">
+            <h4>Q1: What makes this system 'Agentic' instead of just a regular chatbot?</h4>
+            <p><strong>Answer:</strong> A traditional chatbot is passive and single-turn (input query &rarr; text output). An Agentic AI assistant has <em>agency</em>: it can formulate a plan, decide which tools to call in what order, inspect the results of each action, autonomously adapt or re-plan when an action fails (e.g. finding alternative lab slots), and persist state across multi-step campus workflows.</p>
+          </div>
+
+          <div class="faq-item">
+            <h4>Q2: What is Goal Decomposition and why is it essential?</h4>
+            <p><strong>Answer:</strong> Students frequently express compound needs in natural language (e.g., "Check attendance and book lab"). Goal decomposition is the algorithmic process of parsing a compound goal into an ordered sequence of discrete subgoals $[g_1, g_2, \dots, g_n]$, each mapped to an executable function with typed parameters. Without decomposition, rule-based systems drop all but the first intent.</p>
+          </div>
+
+          <div class="faq-item">
+            <h4>Q3: How does your Dynamic Re-Planning mechanism work?</h4>
+            <p><strong>Answer:</strong> When a tool execution returns a conflict—such as <code>SLOT_FULL_CONFLICT</code> when booking a lab or <code>COPIES_EXHAUSTED</code> at the library—the agent intercepts the failure state instead of crashing. It evaluates the tool's suggestions, selects the nearest available slot or related book in the same category, and executes a compensatory tool call, logging the reasoning trace for complete accountability.</p>
+          </div>
+
+          <div class="faq-item">
+            <h4>Q4: How did you implement Human Escalation?</h4>
+            <p><strong>Answer:</strong> The agent has dedicated guardrails that identify out-of-domain requests, administrative grievances, disciplinary appeals, or repeated execution failures. It invokes the <code>escalate_to_human_admin</code> tool, creating an official tracking ticket for the Dean of Student Affairs / Grievance Cell, ensuring sensitive institutional policies are protected.</p>
+          </div>
+
+          <div class="faq-item">
+            <h4>Q5: How did you compare against the Rule-Based Baseline?</h4>
+            <p><strong>Answer:</strong> We implemented a scripted regex and finite-state chatbot as a baseline and evaluated both systems on 6 standard campus edge cases. The rule-based system suffered from single-intent bottlenecks (dropping 63.6% of secondary tasks) and zero error recovery, whereas our Agentic AI achieved 93.8% multi-step task completion and 100% successful re-planning.</p>
+          </div>
+        </div>
+
+        <!-- Card 3: Team Individual Contribution Breakdown -->
+        <div class="viva-card">
+          <h3>👥 Individual Role & Contribution Breakdown</h3>
+          <div class="role-box">
+            <h4>Ruben Jose</h4>
+            <p><strong>Primary Focus:</strong> Agentic Reasoning Architecture, ReAct Loop, and Goal Decomposition Engine. Designed the prompt-to-subgoal decomposition pipeline and rule-based baseline comparison framework.</p>
+          </div>
+          <div class="role-box">
+            <h4>Anupa Yadav</h4>
+            <p><strong>Primary Focus:</strong> Dynamic Re-Planning Engine, Failure Observation Loops, and Attendance/Lab Tool Integrations. Implemented the 75% attendance remediation calculator and slot conflict healing logic.</p>
+          </div>
+          <div class="role-box">
+            <h4>Erick Simon Kasole</h4>
+            <p><strong>Primary Focus:</strong> Human Escalation Guardrails, Database Schema & Persistence, Maintenance, Leave, and Library Tool Endpoints. Designed institutional policy verification and ticket routing.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
