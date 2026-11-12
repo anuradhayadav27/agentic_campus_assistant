@@ -9,7 +9,7 @@
 |:---|:---:|:---|
 | **Ruben Jose** | 12109483 | ReAct Architecture, Goal Decomposition, & Rule-Based Comparison |
 | **Anupa Yadav** | 12109482 | Dynamic Re-Planning Loop, Failure Interception, & Attendance/Lab Tools |
-| **Erick Simon Kasole** | 12109484 | Human Escalation Guardrails, Database Schema, & Maintenance/Leave/Library Tools |
+| **Anuradha Yadav** | 12530641 | Human Escalation Guardrails, Database Schema, & Maintenance/Leave/Library Tools |
 
 ---
 
