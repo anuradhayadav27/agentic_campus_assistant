@@ -12,7 +12,7 @@
 **Group Members:**
 1. **Ruben Jose** (Registration No: 12109483)
 2. **Anupa Yadav** (Registration No: 12109482)
-3. **Erick Simon Kasole** (Registration No: 12109484)
+3. **Anuradha Yadav** (Registration No: 12530641)
 
 **Faculty / Course Evaluator:** Department of Artificial Intelligence & Machine Learning  
 **Total Evaluation Weightage:** 30 Marks
